@@ -203,3 +203,58 @@ export const interviewCovers = [
   "/tiktok.png",
   "/yahoo.png",
 ];
+
+
+
+export const dummyInterviews: Interview[] = [
+  {
+    id: "1",
+    userId: "101",
+    role: "Software Engineer",
+    type: "Technical",
+    techStack: ["React", "Node.js", "MongoDB"],
+    level: "Junior",
+    timeCreated: "2025-03-24T10:00:00Z",
+    question: "How does React handle state management, and what are the differences between useState and useReducer?"
+  },
+  {
+    id: "2",
+    userId: "102",
+    role: "Data Scientist",
+    type: "Behavioral",
+    techStack: ["Python", "TensorFlow", "SQL"],
+    level: "Mid",
+    timeCreated: "2025-03-23T15:30:00Z",
+    question: "Tell me about a time when you had to work with a large dataset. What challenges did you face, and how did you overcome them?"
+  },
+  {
+    id: "3",
+    userId: "103",
+    role: "DevOps Engineer",
+    type: "Managerial",
+    techStack: ["Docker", "Kubernetes", "AWS"],
+    level: "Senior",
+    timeCreated: "2025-03-22T08:45:00Z",
+    question: "How would you design a scalable CI/CD pipeline for a microservices architecture?"
+  },
+  {
+    id: "4",
+    userId: "104",
+    role: "Frontend Developer",
+    type: "Technical",
+    techStack: ["Next.js", "Tailwind CSS", "TypeScript"],
+    level: "Junior",
+    timeCreated: "2025-03-21T12:15:00Z",
+    question: "What are the key differences between client-side and server-side rendering in Next.js?"
+  },
+  {
+    id: "5",
+    userId: "105",
+    role: "Machine Learning Engineer",
+    type: "Technical",
+    techStack: ["PyTorch", "Scikit-Learn", "AWS SageMaker"],
+    level: "Mid",
+    timeCreated: "2025-03-20T17:20:00Z",
+    question: "Explain the concept of overfitting in machine learning and how you would prevent it."
+  },
+];
