@@ -4,6 +4,7 @@ import { getRandomInterviewCover } from '@/constants/utils';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import DisplayTech from './DisplayTech';
 
 
 // import { getFeedbackByInterviewId } from '@/lib/actions/feedback.actions';
@@ -16,10 +17,7 @@ const InterviewCard = async({id,
     level,
     timeCreated}:InterviewCardProps) => {
 
-    const feedback = userId && id ? await getFeedbackByInterviewId({
-        interviewId: id,
-         userId,
-        }) : null;
+    const feedback = null as Feedback | null;
     // if teh user have mixed technical  with beahviuoral then do this 
 
     const normalise = /mix/gi.test(type)? 'Mixed':type;
@@ -28,7 +26,7 @@ const InterviewCard = async({id,
 
 
   return (
-    <div className='card-border w-[360px] max-sm:w-full min-h-96'>
+    <div className='card-border w-[410px] max-sm:w-full min-h-96'>
         <div className='card-interview'>
             <div>
                 <div className='absolute top-0 right-0 w-fit px-4 py-2 rounded-bl-lg bg-light-600'>
@@ -56,8 +54,7 @@ const InterviewCard = async({id,
             </div>
 
             <div className='flex flex-row justify-between'    >
-                <p>Tech Icons</p>
-                <Button className='btn-primary'>
+                <DisplayTech techStack={techstack}/>                <Button className='btn-primary'>
                     <Link href={feedback? `/interview/${id}/feedback`:`/interview/${id}`}>
                     {feedback?'Check Feedback':'View Interview'}</Link>
                 </Button>
