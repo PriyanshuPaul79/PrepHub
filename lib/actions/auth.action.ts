@@ -18,6 +18,12 @@ export async function signUp(params: SignUpParams) {
             name,
             email
         })
+
+
+        return {
+            success:true,
+            message:"User created successfully please sign in"
+        }
     } catch (e: any) {
         console.error('Error creating user:', e);
         if (e.code === 'auth/email-already-in-use') {
@@ -36,8 +42,9 @@ export async function signUp(params: SignUpParams) {
 }
 
 
-export async function signin(params: SignInParams) {
+export async function signIn(params: SignInParams) {
     const { email, idToken } = params;
+
     try {
         const userRecord = await auth.getUserByEmail(email);
         if (!userRecord) {
@@ -48,6 +55,7 @@ export async function signin(params: SignInParams) {
         }
 
         await setSessionCookie(idToken);
+
     } catch (e) {
     console.log(e);
 
@@ -60,11 +68,11 @@ export async function signin(params: SignInParams) {
 
 
 export async function setSessionCookie(params: SignInParams) {
-    const cookie = await cookies()
+    const cookieStore = await cookies()
     const sessionCookie = await auth.createSessionCookie(params.idToken, {
         expiresIn: 60 * 60 * 24 * 7 * 1000,
     });
-    cookie.set('session', sessionCookie, {
+    cookieStore.set('session', sessionCookie, {
         maxAge: 60 * 60 * 24 * 7,
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
