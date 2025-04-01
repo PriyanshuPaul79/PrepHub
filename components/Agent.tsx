@@ -1,4 +1,6 @@
 import { cn } from '@/constants/utils';
+import { spawn } from 'child_process';
+import { Span } from 'next/dist/trace';
 import Image from 'next/image'
 import React from 'react'
 
@@ -13,7 +15,10 @@ enum callStatus {
 const Agent = ({ userName }: AgentProps) => {
     const isSpeaking = true;
     const currentCallStatus: callStatus = callStatus.CONNECTING;
-
+    const transcript = [
+        'Hello myself Priyanshu'
+    ]
+    const last = transcript[transcript.length-1]
     return (
         <>
             <div className='call-view'>
@@ -28,10 +33,20 @@ const Agent = ({ userName }: AgentProps) => {
                 <div className='card-border'>
                     <div className='card-content'>
                         <Image src='/user.png' height={60} width={60} alt='user' className='rounded-full object-cover size-[120px]' />
+                        {/* {isSpeaking && <span className='animate-speak'></span>}  */}
                         <h3>{userName}</h3>
                     </div>
                 </div>
             </div>
+            {transcript.length>0 && (
+                <div className='transcript-border'>
+                    <div className='transcript'>
+                        <p key={last} className={cn('transition-opacity duration-500 opacity-0', 'animate-fadeIn opacity-100')} >
+                        {last}
+                        </p>
+                    </div>
+                </div>
+            )}
             <div className="w-full flex justify-center">
                 {currentCallStatus !== callStatus.ACTIVE ? (
                     <button className="relative btn-call">
