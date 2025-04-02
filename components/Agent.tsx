@@ -1,13 +1,12 @@
 'use client'
-import { cn } from '@/constants/utils';
+import { cn } from '@/lib/utils';
 import { spawn } from 'child_process';
 import { Span } from 'next/dist/trace';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import { Vapi } from '@/lib/vapi.sdk';
+import { vapi } from '@/lib/vapi.sdk';
 import { interviewer } from '@/constants';
-import { set } from 'zod';
 
 
 
@@ -58,22 +57,22 @@ const Agent = ({ userName,
         const onError = (e:Error)=> console.log('Error',e);
 
         // these are vapi event listeners 
-        Vapi.on('call-start',onCallStart);
-        Vapi.on('call-end',onCallFinish);
-        Vapi.on('message',onMessage);
-        Vapi.on('speech-start',onSpeechStart);
-        Vapi.on('speech-end',onSpeechEnd);
-        Vapi.on('error',onError);
+        vapi.on('call-start',onCallStart);
+        vapi.on('call-end',onCallFinish);
+        vapi.on('message',onMessage);
+        vapi.on('speech-start',onSpeechStart);
+        vapi.on('speech-end',onSpeechEnd);
+        vapi.on('error',onError);
 
 
         return ()=>{
             // when not using close the listeners so that its doesnt slow our application  
-            Vapi.off('call-start',onCallStart);
-            Vapi.off('call-end',onCallFinish);
-            Vapi.off('message',onMessage);
-            Vapi.off('speech-start',onSpeechStart);
-            Vapi.off('speech-end',onSpeechEnd);
-            Vapi.off('error',onError);
+            vapi.off('call-start',onCallStart);
+            vapi.off('call-end',onCallFinish);
+            vapi.off('message',onMessage);
+            vapi.off('speech-start',onSpeechStart);
+            vapi.off('speech-end',onSpeechEnd);
+            vapi.off('error',onError);
         }
 
     }, [])
@@ -90,18 +89,24 @@ const Agent = ({ userName,
 
     const handleCall = async () => {
         setCallStatus(CallStatus.CONNECTING);
-        await Vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,{
+        try{
+        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,{
             variableValues: {
                 username : userName,
                 userid:userId,
             },
+        
         });
-    } 
+    } catch (e) {
+        console.error('Call failed:', e);
+        setCallStatus(CallStatus.INACTIVE);
+    }
+}
 
 
     const disconnectCall = async()=>{
         setCallStatus(CallStatus.FINISHED);
-        Vapi.stop();
+        vapi.stop();
     }
 
     const latestMessage = message[message.length - 1]?.content;
@@ -156,3 +161,6 @@ const Agent = ({ userName,
 }
 
 export default Agent
+
+
+
