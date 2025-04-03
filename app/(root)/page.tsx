@@ -4,8 +4,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { dummyInterviews } from '@/constants';
 import InterviewCard from '@/components/InterviewCard';
+import { getCurrentUser, getInterviewsByUserId } from '@/lib/actions/auth.action';
 
-const page = () => {
+const page = async () => {
+
+  const user = await getCurrentUser();
+  const userInterviews = await getInterviewsByUserId(user?.id!);
+  const pastInterviews = userInterviews?.length > 0 ;
+
+
   return (
     <>
       <section className='card-cta'>
@@ -34,9 +41,14 @@ const page = () => {
         <h2> Lets take an interview </h2>
 
         <div className='interviews-section'>
-        {dummyInterviews.map((interview) =>(
-            <InterviewCard {...interview} key={interview.id}/>
-          ))}
+        {
+          pastInterviews ? (
+            userInterviews?.map((interview) =>(
+              <InterviewCard {...interview} key={interview.id}/>
+            ))) : (
+              <p> No Interviews yet </p>
+            )
+        }
         </div>
       </section>
 

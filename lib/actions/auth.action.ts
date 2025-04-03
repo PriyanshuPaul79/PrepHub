@@ -142,3 +142,17 @@ export async function isAuthenticated() {
     // either user exist or not can be a boolean value thats why we are using !! here to get the actual value 
     return !!user;
 }
+
+
+
+export async function getInterviewsByUserId(userId:string): Promise<Interview[] | null> {
+    const interviews = db.collection('interviews')
+    .where('userId', '==', userId)
+    .orderBy('createdAt', 'desc')
+    .get();
+
+    return (await interviews).docs.map((doc) => ({
+        id:doc.id,
+        ...doc.data(),
+    })) as Interview[];
+}
