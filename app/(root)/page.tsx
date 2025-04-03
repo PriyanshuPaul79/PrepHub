@@ -4,13 +4,26 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { dummyInterviews } from '@/constants';
 import InterviewCard from '@/components/InterviewCard';
-import { getCurrentUser, getInterviewsByUserId } from '@/lib/actions/auth.action';
+import { getCurrentUser, getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/auth.action';
+import { promise } from 'zod';
 
 const page = async () => {
 
   const user = await getCurrentUser();
-  const userInterviews = await getInterviewsByUserId(user?.id!);
+
+  // optimised approach to fetch both in parallel as they are independent of each other so thisn increase the sped 
+  const[userInterviews,latestInterviews] = await Promise.all([
+    await getInterviewsByUserId(user?.id!),
+    await getLatestInterviews({userId:user?.id!})
+  ])
+
+  // ineffieceint way to fetch 2 independent values 
+  // const userInterviews = await getInterviewsByUserId(user?.id!);
+  // const latestInterviews = await getLatestInterviews({userId:user?.id!})
+
+
   const pastInterviews = userInterviews?.length > 0 ;
+  const upcomingInterviews = latestInterviews?.length>0; 
 
 
   return (
@@ -30,15 +43,6 @@ const page = async () => {
       <section className='flex flex-col gap-6 mt-8'>
         <h2>Your Interview Hub</h2>
 
-        <div className='interviews-section'>
-          {dummyInterviews.map((interview) =>(
-            <InterviewCard {...interview} key={interview.id}/>
-          ))}
-        </div>
-      </section>
-
-      <section className='flex flex-col gap-6 mt-8'>
-        <h2> Lets take an interview </h2>
 
         <div className='interviews-section'>
         {
@@ -47,6 +51,22 @@ const page = async () => {
               <InterviewCard {...interview} key={interview.id}/>
             ))) : (
               <p> No Interviews yet </p>
+            )
+        }
+        </div>
+        
+      </section>
+
+      <section className='flex flex-col gap-6 mt-8'>
+        <h2>  Other interviews that our users created  </h2>
+
+        <div className='interviews-section'>
+        {
+          upcomingInterviews ? (
+            latestInterviews?.map((interview) =>(
+              <InterviewCard {...interview} key={interview.id}/>
+            ))) : (
+              <p> No new interview present </p>
             )
         }
         </div>
